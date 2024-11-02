@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Card, CardBody, CardHeader, Button } from '@nextui-org/react';
-import { Trash, Send, Plus } from 'react-feather'
+import { Trash, Send } from 'react-feather'
 import "./Reading.css"
 import SubCards from './Subcards';
 
-type Props = {};
 
-const Reading = (props: Props) => {
+
+const Reading = () => {
   const [text, setText] = useState('');
 
 
@@ -14,16 +14,7 @@ const Reading = (props: Props) => {
     setText('');
   }
 
-  const [flipped, setFlipped] = useState(Array(5).fill(false));
-
-  const handleFlip = (index: number) => {
-    console.log(index)
-    setFlipped((prev) => {
-      const newFlipped = [...prev];
-      newFlipped[index] = !newFlipped[index];
-      return newFlipped;
-    });
-  };
+  
 
   return (
     <div className="flex gap-4 p-4 min-h-screen h-screen">
