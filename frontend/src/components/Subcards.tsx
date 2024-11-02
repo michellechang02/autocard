@@ -14,7 +14,7 @@ const SubCard: React.FC<SubCardProps> = ({ index, flipped, handleFlip }) => {
   return (
     <div className="h-1/5 perspective-1000" style={{ perspective: '1000px' }}>
       <div
-        className={`flip-card w-full h-full relative transition-transform duration-700 ${
+        className={`w-full h-full relative transition-transform duration-700 ${
           flipped ? 'rotate-y-180' : ''
         } hover:scale-105`}
         style={{
@@ -25,7 +25,7 @@ const SubCard: React.FC<SubCardProps> = ({ index, flipped, handleFlip }) => {
       >
         {/* Front of the Sub Card */}
         <div
-          className="flip-card-front absolute w-full h-full bg-blue-500 dark:bg-blue-800 flex items-center justify-center border-2 border-blue-700 dark:border-blue-900 rounded-xl shadow-xl"
+          className=" absolute w-full h-full bg-blue-500 dark:bg-blue-800 flex items-center justify-center border-2 border-blue-700 dark:border-blue-900 rounded-xl shadow-xl"
           style={{
             backfaceVisibility: 'hidden',
             transform: 'rotateY(0deg)',
@@ -52,7 +52,7 @@ const SubCard: React.FC<SubCardProps> = ({ index, flipped, handleFlip }) => {
 
         {/* Back of the Sub Card */}
         <div
-          className="flip-card-back absolute w-full h-full bg-blue-700 dark:bg-blue-900 flex items-center justify-center border-2 border-blue-800 dark:border-blue-1000 rounded-xl shadow-xl"
+          className=" absolute w-full h-full bg-blue-700 dark:bg-blue-900 flex items-center justify-center border-2 border-blue-800 dark:border-blue-1000 rounded-xl shadow-xl"
           style={{
             backfaceVisibility: 'hidden',
             transform: 'rotateY(180deg)',

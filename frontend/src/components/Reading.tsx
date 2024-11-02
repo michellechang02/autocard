@@ -31,12 +31,12 @@ const Reading = (props: Props) => {
       <Card className="flex-1 p-6 h-full flex flex-col" radius="none">
       <CardHeader className="flex flex-row justify-between items-center gap-4">
       <div className="flex gap-2">
-          <Button color="success" variant="flat" onClick={deleteText} isIconOnly>
+          <Button color="warning" variant="flat" onClick={deleteText} isIconOnly>
             <Send />
           </Button>
         </div>
         <div className="flex gap-2">
-          <Button color="danger" variant="flat" onClick={deleteText} isIconOnly>
+          <Button color="warning" variant="flat" onClick={deleteText} isIconOnly>
             <Trash />
           </Button>
         </div>

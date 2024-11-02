@@ -10,7 +10,16 @@ export default {
     "./node_modules/@nextui-org/react/**/*.{js,ts,jsx,tsx}", // Include NextUI components
   ],
   theme: {
-    extend: {},
+    extend: {
+      rotate: {
+        'y-180': '180deg',
+      },
+    },
+  },
+  variants: {
+    extend: {
+      transform: ['responsive', 'hover', 'focus'],
+    },
   },
   darkMode: "class",
   plugins: [nextui()],

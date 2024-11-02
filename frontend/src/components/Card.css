@@ -1,0 +1,35 @@
+.flip-card {
+    perspective: 1000px;
+    margin-top: -50px;
+    width: 60vw; /* Set the width to 95% of the viewport width */
+  height: 60vh; /* Set the height to 95% of the viewport height */
+  font-size: 60px;
+  border: 1px solid rgba(0, 0, 0, 0.1); /* Soft, light border */
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+  background-color: #ffffff; /* Background color for the card */
+  transition: transform 0.3s; /* Smooth transition for hover effect */
+  }
+  
+  .flip-card-inner {
+    transform-style: preserve-3d;
+    position: relative;
+    width: 100%;  /* Ensure the inner flip card takes the full width */
+  height: 100%; /* Ensure the inner flip card takes the full height */
+  }
+  
+  .flip-card-front,
+  .flip-card-back {
+    backface-visibility: hidden;
+    align-items: center; /* Center content vertically */
+  justify-content: center; /* Center content horizontally */
+  }
+  
+  .backface-hidden {
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+  }
+  
+  .rotate-y-180 {
+    transform: rotateY(180deg);
+  }
+  
