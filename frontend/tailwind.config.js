@@ -14,11 +14,21 @@ export default {
       rotate: {
         'y-180': '180deg',
       },
+      perspective: {
+        '1000': '1000px',
+      },
+      transformStyle: {
+        '3d': 'preserve-3d',
+      },
+      backfaceVisibility: {
+        hidden: 'hidden',
+      },
     },
   },
   variants: {
     extend: {
       transform: ['responsive', 'hover', 'focus'],
+      perspective: ['responsive', 'hover', 'focus'],
     },
   },
   darkMode: "class",
