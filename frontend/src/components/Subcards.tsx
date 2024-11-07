@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '@nextui-org/react';
 import { Plus } from 'react-feather';
 import './Subcards.css'; // Import the CSS file
@@ -17,31 +17,24 @@ interface SubCardProps {
 }
 
 const SubCard: React.FC<SubCardProps> = ({ index, flipped, handleFlip, question, answer }) => {
-  return (
-    <div className="card-container" onClick={() => handleFlip(index)}>
-      <div className={`card-inner ${flipped ? 'flipped' : ''}`}>
-        {/* Front of the Sub Card */}
-        <div className="card-front card-side">
-          <div className="flex flex-row items-center p-4">
-            <Button
-              onClick={(e) => e.stopPropagation()} // Prevent flipping when button is clicked
-              variant="flat"
-              isIconOnly
-              color="warning"
-              className="mr-4"
-              aria-label={`Add Question ${index + 1}`}
-            >
-              <Plus className="text-yellow-500" />
-            </Button>
-            <h2 className="text-center font-semibold ml-2">
-              {question}
-            </h2>
-          </div>
-        </div>
 
-        {/* Back of the Sub Card */}
-        <div className="card-back card-side">
-          <h2 className="text-center font-semibold p-4">{answer}</h2>
+  
+  return (
+    <div
+      className="flip-card cursor-pointer" // Adjusted to 95% of viewport width and height
+      style={{ height: '18vh', marginTop: '10px' }} // Set negative margin-top here
+      onClick={() => handleFlip(index)}
+    >
+      <div
+        className={`flip-card-inner transition-transform duration-700 ${
+          flipped ? 'transform rotate-y-180' : ''
+        }`}
+      >
+        <div className="flip-card-front w-full h-full text-black p-4 flex items-center justify-center text-center rounded-lg shadow-md border-4 border-gray-300 backface-hidden">
+          <p className="text-xl font-semibold">{question}</p>
+        </div>
+        <div className="flip-card-back p-4 flex items-center justify-center text-center rounded-lg shadow-md border-4 border-gray-300 backface-hidden transform rotate-y-180 absolute inset-0">
+          <p className="text-xl font-semibold">{answer}</p>
         </div>
       </div>
     </div>
@@ -56,10 +49,15 @@ const SubCards: React.FC<SubCardsProps> = ({ generatedQuestions }) => {
   const [flipped, setFlipped] = useState<boolean[]>(Array(generatedQuestions.length).fill(false));
 
   const handleFlip = (index: number): void => {
-    setFlipped((prev) =>
-      prev.map((flippedState, i) => (i === index ? !flippedState : flippedState))
-    );
+    console.log("FLIP:", index);
+    setFlipped((prev) => {
+      // Create a copy of the previous state to avoid mutating state directly
+      const newFlipped = [...prev];
+      newFlipped[index] = !newFlipped[index]; // Toggle the flipped state for the given index
+      return newFlipped;
+    });
   };
+
 
   return (
     <div className="flex-1 grid grid-cols-1 gap-6 h-full">

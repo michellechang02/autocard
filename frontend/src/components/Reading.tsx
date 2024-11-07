@@ -2,7 +2,7 @@ import { useState, useRef } from 'react';
 import { Card, CardBody, Button } from '@nextui-org/react';
 import { Trash, Send, PlusCircle } from 'react-feather';
 import './Reading.css';
-import SubCards from './Subcards';
+import SubCards from './Subcards.tsx'; // Corrected case to match file name
 import axios from 'axios';
 
 interface QuestionAnswer {
@@ -12,12 +12,14 @@ interface QuestionAnswer {
 
 async function generateQuestions(text: string): Promise<QuestionAnswer[]> {
   try {
-    const response = await axios.post<{ question: string; answer: string }[]>('http://127.0.0.1:8000/generate-questions', {
-      text: text,
-      numQuestions: 5,
-    });
+    const response = await axios.post<{ question: string; answer: string }[]>(
+      'http://127.0.0.1:8000/generate-questions',
+      {
+        text: text,
+        numQuestions: 5,
+      }
+    );
     return response.data || [];
-    
   } catch (error) {
     console.error('Error generating questions:', error);
     return [];
@@ -29,11 +31,12 @@ const Reading: React.FC = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [generatedQuestions, setGeneratedQuestions] = useState<QuestionAnswer[]>([]);
-  const textAreaRef = useRef<HTMLTextAreaElement>(null);
+  const inputTextRef = useRef<HTMLTextAreaElement>(null); // First text ref
+  const displayTextRef = useRef<HTMLDivElement>(null); // Second text ref
 
   const handleGenerateQuestions = async () => {
     setLoading(true);
-    const visibleText = textAreaRef.current ? textAreaRef.current.value : '';
+    const visibleText = inputTextRef.current ? inputTextRef.current.value : '';
     const questions_answers = await generateQuestions(visibleText);
     console.log(questions_answers);
     setGeneratedQuestions(questions_answers);
@@ -41,9 +44,9 @@ const Reading: React.FC = () => {
   };
 
   const handleSubmit = () => {
-    if (textAreaRef.current) {
+    if (inputTextRef.current) {
       setIsSubmitted(true);
-      setText(textAreaRef.current.value);
+      setText(inputTextRef.current.value);
     }
   };
 
@@ -85,6 +88,7 @@ const Reading: React.FC = () => {
         <CardBody className="flex-1 overflow-auto border border-gray-300 rounded-lg p-4">
           {isSubmitted ? (
             <div
+              ref={displayTextRef} // Updated to use the second text ref
               className="h-full w-full overflow-y-auto"
               style={{ whiteSpace: 'pre-wrap', wordWrap: 'break-word' }}
             >
@@ -92,7 +96,7 @@ const Reading: React.FC = () => {
             </div>
           ) : (
             <textarea
-              ref={textAreaRef}
+              ref={inputTextRef} // Updated to use the first text ref
               placeholder="Enter text..."
               className="flex-1 h-full w-full p-4 border border-gray-300 rounded-lg resize-none"
               value={text}

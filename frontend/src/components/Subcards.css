@@ -1,36 +1,28 @@
-/* Card.css */
-.card-container {
+.flip-card {
   perspective: 1000px;
+border: 1px solid rgba(0, 0, 0, 0.1); 
+box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1); 
+background-color: #ffffff; 
+transition: transform 0.3s; /* Smooth transition for hover effect */
 }
 
-.card-inner {
+.flip-card-inner {
   transform-style: preserve-3d;
   position: relative;
-  transition: transform 0.7s; /* Smooth transition for flipping */
 }
 
-.card.flipped .card-inner {
-  transform: rotateY(180deg);
-}
-
-.card-front,
-.card-back {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.flip-card-front,
+.flip-card-back {
   backface-visibility: hidden;
-  border-radius: 10px;
+  align-items: center; /* Center content vertically */
+justify-content: center; /* Center content horizontally */
 }
 
-.card-front {
-  background-color: #3b82f6; /* Blue */
-  transform: rotateY(0deg);
+.backface-hidden {
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
 }
 
-.card-back {
-  background-color: #1e40af; /* Darker blue */
+.rotate-y-180 {
   transform: rotateY(180deg);
 }

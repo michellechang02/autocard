@@ -37,7 +37,7 @@ async def read_root():
 @app.post("/generate-questions", response_model=List[QuestionAnswer])
 async def generate_questions(request: QuestionRequest):
     try:
-
+        logging.info(f"Request text: {request}")
         prompt = (
             f"Provide in string JSON format the user's question as 'question', "
             f"then answer the question as 'answer' by answering the user's question "
