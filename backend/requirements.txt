@@ -3,3 +3,5 @@ uvicorn
 openai==0.28
 python-dotenv
 pydantic
+pymongo
+motor

@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Card, CardBody, Button } from '@nextui-org/react';
 import { Trash, Send, PlusCircle } from 'react-feather';
 import './Reading.css';
@@ -30,16 +30,47 @@ const Reading: React.FC = () => {
   const [text, setText] = useState('');
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [loadingText, setLoadingText] = useState("Capturing...");
   const [generatedQuestions, setGeneratedQuestions] = useState<QuestionAnswer[]>([]);
-  const inputTextRef = useRef<HTMLTextAreaElement>(null); // First text ref
-  const displayTextRef = useRef<HTMLDivElement>(null); // Second text ref
+  const displayTextRef = useRef<HTMLDivElement | null>(null);
+  const inputTextRef = useRef<HTMLTextAreaElement | null>(null);
+
+
+  useEffect(() => {
+    if (loading) {
+      const timer = setTimeout(() => {
+        setLoadingText("Creating Flashcards ...");
+      }, 2000);
+
+      // Clear timeout if loading state changes
+      return () => clearTimeout(timer);
+    }
+  }, [loading]);
+
+  const captureVisibleText = () => {
+    if (displayTextRef.current) {
+      const { scrollTop, clientHeight, scrollHeight } = displayTextRef.current;
+
+      // Get the starting and ending point of the visible text
+      const visibleStart = Math.floor((scrollTop / scrollHeight) * text.length);
+      const visibleEnd = Math.floor(((scrollTop + clientHeight) / scrollHeight) * text.length);
+
+      // Capture the visible portion of the text
+      return text.substring(visibleStart, visibleEnd);
+    }
+    return "";
+  };
 
   const handleGenerateQuestions = async () => {
     setLoading(true);
-    const visibleText = inputTextRef.current ? inputTextRef.current.value : '';
-    const questions_answers = await generateQuestions(visibleText);
+    setLoadingText("Capturing...");
+    let visible_text = captureVisibleText();
+    const questions_answers = await generateQuestions(visible_text);
     console.log(questions_answers);
     setGeneratedQuestions(questions_answers);
+    
+    // reset the loading text & loading status
+    setLoadingText("Capturing...");
     setLoading(false);
   };
 
@@ -55,6 +86,7 @@ const Reading: React.FC = () => {
     setIsSubmitted(false);
     setGeneratedQuestions([]);
   };
+
 
   return (
     <div className="flex gap-4 p-4 min-h-screen h-screen">
@@ -74,11 +106,11 @@ const Reading: React.FC = () => {
                 {loading ? (
                   <div className="flex items-center justify-center">
                     <div className="w-4 h-4 border-2 border-t-2 border-t-transparent border-current animate-spin rounded-full"></div>
-                    <span className="ml-2">Generating...</span>
+                    <span className="ml-2">{loadingText}</span>
                   </div>
                 ) : (
                   <>
-                    <PlusCircle className="mr-2" /> Generate Questions
+                    <PlusCircle className="mr-2" /> Capture & Flashcard Text
                   </>
                 )}
               </Button>
@@ -86,23 +118,25 @@ const Reading: React.FC = () => {
           )}
         </div>
         <CardBody className="flex-1 overflow-auto border border-gray-300 rounded-lg p-4">
-          {isSubmitted ? (
-            <div
-              ref={displayTextRef} // Updated to use the second text ref
-              className="h-full w-full overflow-y-auto"
-              style={{ whiteSpace: 'pre-wrap', wordWrap: 'break-word' }}
-            >
-              {text}
-            </div>
-          ) : (
-            <textarea
-              ref={inputTextRef} // Updated to use the first text ref
-              placeholder="Enter text..."
-              className="flex-1 h-full w-full p-4 border border-gray-300 rounded-lg resize-none"
-              value={text}
-              onChange={(e) => setText(e.target.value)}
-            />
-          )}
+        {isSubmitted ? (
+        <div
+          ref={displayTextRef}
+          className="h-full w-full overflow-y-auto"
+          style={{ whiteSpace: 'pre-wrap', wordWrap: 'break-word' }}
+        >
+          {text}
+        </div>
+      ) : (
+        <textarea
+          ref={inputTextRef}
+          placeholder="Enter text..."
+          className="flex-1 h-full w-full p-4 border border-gray-300 rounded-lg resize-none"
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+        />
+      )}
+
+      
         </CardBody>
       </Card>
 
