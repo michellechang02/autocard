@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import './Card.css'; // Ensure this file contains the necessary flip styles
+import axios from 'axios'
+import { Button } from '@nextui-org/react'
 
 interface CardProps {
   question: string;

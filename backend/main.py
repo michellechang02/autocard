@@ -1,11 +1,14 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, status, Depends
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 import openai
 import os
 from dotenv import load_dotenv
 from typing import List
-from models.models import QuestionRequest, QuestionAnswer
+from models.models import QuestionRequest, QuestionAnswer, Card
+from motor.motor_asyncio import AsyncIOMotorClient
+# from database import cards_collection
+from bson import ObjectId
 import json
 import logging
 import re
@@ -25,6 +28,11 @@ app.add_middleware(
 )
 
 openai.api_key = os.getenv("OPENAI_API_KEY")
+MONGO_URL = os.getenv("MONGO_URL")
+
+client = AsyncIOMotorClient(MONGO_URL)
+database = client["cards_db"]
+cards_collection = database["cards"]
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
@@ -79,3 +87,45 @@ async def generate_questions(request: QuestionRequest):
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error generating questions: {str(e)}")
+
+
+# Create a card
+@app.post("/cards", response_model=Card)
+async def create_card(card: Card):
+    new_card = await cards_collection.insert_one(card.dict())
+    created_card = await cards_collection.find_one({"_id": new_card.inserted_id})
+    return {**created_card, "id": str(created_card["_id"])}
+
+# Read all cards
+@app.get("/cards", response_model=List[Card])
+async def get_cards():
+    cards = await cards_collection.find().to_list(100)
+    return [{**card, "id": str(card["_id"])} for card in cards]
+
+# Read a single card
+@app.get("/cards/{card_id}", response_model=Card)
+async def get_card(card_id: str):
+    card = await cards_collection.find_one({"_id": ObjectId(card_id)})
+    if card is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Card not found")
+    return {**card, "id": str(card["_id"])}
+
+# Update a card
+@app.put("/cards/{card_id}", response_model=Card)
+async def update_card(card_id: str, card: Card):
+    updated_card = await cards_collection.find_one_and_update(
+        {"_id": ObjectId(card_id)},
+        {"$set": card.dict(exclude_unset=True)},
+        return_document=True
+    )
+    if updated_card is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Card not found")
+    return {**updated_card, "id": str(updated_card["_id"])}
+
+# Delete a card
+@app.delete("/cards/{card_id}")
+async def delete_card(card_id: str):
+    result = await cards_collection.delete_one({"_id": ObjectId(card_id)})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Card not found")
+    return JSONResponse(status_code=status.HTTP_204_NO_CONTENT)
