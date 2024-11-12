@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Button } from '@nextui-org/react';
 import './Subcards.css'; // Import the CSS file
 import axios from 'axios';
@@ -18,7 +18,7 @@ interface SubCardProps {
 }
 
 const SubCard: React.FC<SubCardProps> = ({ index, flipped, handleFlip, question, answer }) => {
-  const [showToast, setShowToast] = useState(false);
+  // const [showToast, setShowToast] = useState(false);
 
   const handlePostRequest = async () => {
     try {
@@ -29,8 +29,8 @@ const SubCard: React.FC<SubCardProps> = ({ index, flipped, handleFlip, question,
         answer,
       });
       console.log('Post request successful', response.data);
-      setShowToast(true); // Show success toast
-      setTimeout(() => setShowToast(false), 3000); // Auto-hide after 3 seconds
+      // setShowToast(true); // Show success toast
+      // setTimeout(() => setShowToast(false), 3000); // Auto-hide after 3 seconds
     } catch (error) {
       console.error('Error in post request:', error);
     }
