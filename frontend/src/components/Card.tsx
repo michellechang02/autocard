@@ -8,7 +8,7 @@ interface CardProps {
   id: string;
 }
 
-const Card: React.FC<CardProps> = ({ question, answer, id }) => {
+const Card: React.FC<CardProps> = ({ question, answer }) => {
   const [flipped, setFlipped] = useState(false);
 
 
