@@ -1,27 +1,42 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Card from './Card';
 import { Button } from '@nextui-org/react'
 import { ArrowLeftCircle, ArrowRightCircle } from 'react-feather';
+import axios from 'axios';
 
-const data = [
-  { question: 'What is love?', answer: 'Twice!' },
-  { question: 'Who is your favorite superhero?', answer: 'Spider-Man!' },
-  { question: 'What is the meaning of life?', answer: '42' },
-  // Add more question-answer pairs as needed
-];
+
+interface Card {
+  id: string;
+  question: string;
+  answer: string;
+}
 
 const AllCards: React.FC = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [cards, setCards] = useState<Card[]>([]);
 
   const handleNext = () => {
-    setCurrentIndex((prevIndex) => (prevIndex + 1) % data.length);
+    setCurrentIndex((prevIndex) => (prevIndex + 1) % cards.length);
   };
 
   const handlePrev = () => {
     setCurrentIndex((prevIndex) =>
-      prevIndex === 0 ? data.length - 1 : prevIndex - 1
+      prevIndex === 0 ? cards.length - 1 : prevIndex - 1
     );
   };
+
+  useEffect(() => {
+    const fetchData = async () => {
+        try {
+            const response = await axios.get<Card[]>('http://127.0.0.1:8000/cards');
+            setCards(response.data); // Update the state with the fetched cards
+        } catch (error) {
+            console.error('Error fetching cards:', error);
+        }
+    };
+
+    fetchData();
+}, []); // Empty dependency array to run once on mount
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
@@ -32,16 +47,16 @@ const AllCards: React.FC = () => {
           className="flex transition-transform duration-500"
           style={{
             transform: `translateX(-${currentIndex * 100}%)`,
-            width: `${data.length * 100}%`,
+            width: `${cards.length * 100}%`,
           }}
         >
-          {data.map((item, index) => (
+          {cards.map((item) => (
             <div
-              key={index}
+              key={item.id}
               className="flex-shrink-0 w-full flex items-center justify-center"
               style={{ minWidth: '100vw' }} // Ensure each card takes full width
             >
-              <Card question={item.question} answer={item.answer} />
+              <Card question={item.question} answer={item.answer} id={item.id}/>
             </div>
           ))}
         </div>

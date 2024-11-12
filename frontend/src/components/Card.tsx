@@ -1,15 +1,16 @@
 import React, { useState } from 'react';
 import './Card.css'; // Ensure this file contains the necessary flip styles
-import axios from 'axios'
-import { Button } from '@nextui-org/react'
+
 
 interface CardProps {
   question: string;
   answer: string;
+  id: string;
 }
 
-const Card: React.FC<CardProps> = ({ question, answer }) => {
+const Card: React.FC<CardProps> = ({ question, answer, id }) => {
   const [flipped, setFlipped] = useState(false);
+
 
   return (
     <div
@@ -27,6 +28,7 @@ const Card: React.FC<CardProps> = ({ question, answer }) => {
         </div>
         <div className="flip-card-back w-full h-full bg-blue-500 p-4 flex items-center justify-center text-center rounded-lg shadow-md border-4 border-gray-300 backface-hidden transform rotate-y-180 absolute inset-0">
           <p className="text-4xl font-semibold">{answer}</p> {/* Increased text size */}
+          
         </div>
       </div>
     </div>

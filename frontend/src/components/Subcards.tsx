@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from '@nextui-org/react';
-import { Plus } from 'react-feather';
 import './Subcards.css'; // Import the CSS file
+import axios from 'axios';
+import { Plus } from 'react-feather';
 
 interface QuestionAnswer {
   question: string;
@@ -17,6 +18,23 @@ interface SubCardProps {
 }
 
 const SubCard: React.FC<SubCardProps> = ({ index, flipped, handleFlip, question, answer }) => {
+  const [showToast, setShowToast] = useState(false);
+
+  const handlePostRequest = async () => {
+    try {
+      const id = Date.now().toString();
+      const response = await axios.post('http://127.0.0.1:8000/card', {
+        id,  
+        question,
+        answer,
+      });
+      console.log('Post request successful', response.data);
+      setShowToast(true); // Show success toast
+      setTimeout(() => setShowToast(false), 3000); // Auto-hide after 3 seconds
+    } catch (error) {
+      console.error('Error in post request:', error);
+    }
+  };
 
   
   return (
@@ -30,11 +48,25 @@ const SubCard: React.FC<SubCardProps> = ({ index, flipped, handleFlip, question,
           flipped ? 'transform rotate-y-180' : ''
         }`}
       >
-        <div className="flip-card-front w-full h-full text-black p-4 flex items-center justify-center text-center rounded-lg shadow-md border-4 border-gray-300 backface-hidden">
-          <p className="text-xl font-semibold">{question}</p>
-        </div>
+       <div className="flip-card-front w-full h-full text-black p-4 flex flex-row items-center justify-center text-center rounded-lg shadow-md border-4 border-gray-300 backface-hidden relative">
+  <Button
+    onClick={(e) => {
+      e.stopPropagation(); // Prevents card flip on button click
+      handlePostRequest();
+    }}
+    isIconOnly
+    color="warning"
+    variant="flat"
+    size="sm"
+    className="mr-2" // Adds spacing between button and text
+  >
+    <Plus />
+  </Button>
+  <p className="text-xl font-semibold">{question}</p> {/* Centers the question horizontally */}
+</div>
         <div className="flip-card-back p-4 flex items-center justify-center text-center rounded-lg shadow-md border-4 border-gray-300 backface-hidden transform rotate-y-180 absolute inset-0">
           <p className="text-xl font-semibold">{answer}</p>
+          
         </div>
       </div>
     </div>

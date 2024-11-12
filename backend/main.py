@@ -89,8 +89,11 @@ async def generate_questions(request: QuestionRequest):
         raise HTTPException(status_code=500, detail=f"Error generating questions: {str(e)}")
 
 
+## CRUD operations for cards
+
+
 # Create a card
-@app.post("/cards", response_model=Card)
+@app.post("/card", response_model=Card)
 async def create_card(card: Card):
     new_card = await cards_collection.insert_one(card.dict())
     created_card = await cards_collection.find_one({"_id": new_card.inserted_id})
