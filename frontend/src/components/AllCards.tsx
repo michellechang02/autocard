@@ -6,9 +6,9 @@ import axios from 'axios';
 
 
 interface Card {
-  id: string;
   question: string;
   answer: string;
+  id: string;
 }
 
 const AllCards: React.FC = () => {

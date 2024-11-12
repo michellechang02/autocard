@@ -1,8 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { Card, CardBody, Button } from '@nextui-org/react';
 import { Trash, Send, PlusCircle } from 'react-feather';
-import './Reading.css';
-import SubCards from './Subcards.tsx'; // Corrected case to match file name
+import Subcards from './Subcards.tsx';
 import axios from 'axios';
 
 interface QuestionAnswer {
@@ -140,7 +139,7 @@ const Reading: React.FC = () => {
         </CardBody>
       </Card>
 
-      <SubCards generatedQuestions={generatedQuestions} />
+      <Subcards generatedQuestions={generatedQuestions} />
     </div>
   );
 };

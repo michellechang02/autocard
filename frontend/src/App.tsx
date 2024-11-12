@@ -13,8 +13,8 @@ function App() {
     <Router>
     <Navbar2 />
       <Routes>
-        <Route path="/autocard" element={<Reading />} />
-        <Route path="/autocard/cards" element={<AllCards />} />
+        <Route path="/" element={<Reading />} />
+        <Route path="/cards" element={<AllCards />} />
       </Routes>
     
     </Router>
