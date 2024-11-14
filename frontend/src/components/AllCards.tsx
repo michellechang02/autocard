@@ -3,6 +3,7 @@ import Card from './Card';
 import { Button } from '@nextui-org/react'
 import { ArrowLeftCircle, ArrowRightCircle } from 'react-feather';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
 
 
 interface Card {
@@ -25,6 +26,20 @@ const AllCards: React.FC = () => {
     );
   };
 
+  const removeCard = async (id: string) => {
+    try {
+      console.log("Removing card with id:", id);
+      const response = await axios.delete(`http://127.0.0.1:8000/cards/${id}`);
+      if (response.status === 204) {
+        console.log("Card deleted successfully");
+        // Optionally, update the UI by removing the card from the state
+        setCards((prevCards) => prevCards.filter((card) => card.id !== id));
+      }
+    } catch (error) {
+      console.error("Failed to delete card:", error);
+    }
+  };
+
   useEffect(() => {
     const fetchData = async () => {
         try {
@@ -40,6 +55,8 @@ const AllCards: React.FC = () => {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
+      {cards.length > 0 ? (
+        <>
       {/* Carousel Container */}
       <div className="overflow-hidden w-full flex justify-center mb-8">
         {/* Carousel */}
@@ -56,7 +73,7 @@ const AllCards: React.FC = () => {
               className="flex-shrink-0 w-full flex items-center justify-center"
               style={{ minWidth: '100vw' }} // Ensure each card takes full width
             >
-              <Card question={item.question} answer={item.answer} id={item.id}/>
+              <Card question={item.question} answer={item.answer} id={item.id} removeCard={removeCard}/>
             </div>
           ))}
         </div>
@@ -81,6 +98,15 @@ const AllCards: React.FC = () => {
          <ArrowRightCircle />
         </Button>
       </div>
+      </>
+      ) : (
+        <div className="flex flex-col items-center justify-center h-screen w-full text-center">
+          <p style={{marginBottom: "20px", fontSize: "20px"}}>No cards added. Add a card!</p>
+          <Link to="/">
+            <Button variant="flat" color="warning">Create card</Button>
+          </Link>
+        </div>
+      )}
     </div>
   );
 };
