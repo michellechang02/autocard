@@ -1,5 +1,6 @@
 from fastapi import FastAPI, HTTPException, status, Depends
 from fastapi.responses import JSONResponse
+from fastapi import Response
 from fastapi.middleware.cors import CORSMiddleware
 import openai
 import os
@@ -105,32 +106,32 @@ async def create_card(card: Card):
 @app.get("/cards", response_model=List[Card])
 async def get_cards():
     cards = await cards_collection.find().to_list(100)
-    return [{**card, "id": str(card["_id"])} for card in cards]
+    return [{**card, "id": str(card["id"])} for card in cards]
 
 # Read a single card
 @app.get("/cards/{card_id}", response_model=Card)
 async def get_card(card_id: str):
-    card = await cards_collection.find_one({"_id": ObjectId(card_id)})
+    card = await cards_collection.find_one({"id": card_id})
     if card is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Card not found")
-    return {**card, "id": str(card["_id"])}
+    return {**card, "id": str(card["id"])}
 
 # Update a card
 @app.put("/cards/{card_id}", response_model=Card)
 async def update_card(card_id: str, card: Card):
     updated_card = await cards_collection.find_one_and_update(
-        {"_id": ObjectId(card_id)},
+        {"id": card_id},
         {"$set": card.dict(exclude_unset=True)},
         return_document=True
     )
     if updated_card is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Card not found")
-    return {**updated_card, "id": str(updated_card["_id"])}
+    return {**updated_card, "id": str(updated_card["id"])}
 
-# Delete a card
 @app.delete("/cards/{card_id}")
 async def delete_card(card_id: str):
-    result = await cards_collection.delete_one({"_id": ObjectId(card_id)})
+    print(card_id)
+    result = await cards_collection.delete_one({"id": card_id})
     if result.deleted_count == 0:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Card not found")
-    return JSONResponse(status_code=status.HTTP_204_NO_CONTENT)
+    return Response(status_code=status.HTTP_204_NO_CONTENT)

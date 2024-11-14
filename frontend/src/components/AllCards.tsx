@@ -49,7 +49,7 @@ const AllCards: React.FC = () => {
             console.error('Error fetching cards:', error);
         }
     };
-
+    console.log(cards)
     fetchData();
 }, []); // Empty dependency array to run once on mount
 
