@@ -30,10 +30,23 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-openai.api_key = os.getenv("OPENAI_API_KEY")
-MONGO_URL = os.getenv("MONGODB_URI")
+# Load environment variables
+openai_api_key = os.getenv("OPENAI_API_KEY")
+mongo_url = os.getenv("MONGODB_URI")
+data_api_url = os.getenv("DATA_API_URL")
+data_api_key = os.getenv("DATA_API_KEY")
 
-client = AsyncIOMotorClient(MONGO_URL)
+
+# Check if environment variables are set
+if not openai_api_key:
+    logging.warning("OPENAI_API_KEY is not set. Ensure it is configured in the environment.")
+if not mongo_url:
+    logging.warning("MONGODB_URI is not set. Ensure it is configured in the environment.")
+if not data_api_url or not data_api_key:
+    logging.warning("DATA_API_URL or DATA_API_KEY is not set. Ensure both are configured in the environment.")
+
+
+client = AsyncIOMotorClient(mongo_url)
 database = client["cards_db"]
 cards_collection = database["cards"]
 

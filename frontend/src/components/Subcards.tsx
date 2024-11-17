@@ -23,11 +23,19 @@ const SubCard: React.FC<SubCardProps> = ({ index, flipped, handleFlip, question,
   const handlePostRequest = async () => {
     try {
       const id = Date.now().toString();
-      const response = await axios.post('https://autocard-backend.vercel.app/card', {
-        id,  
-        question,
-        answer,
-      });
+      const response = await axios.post(
+        'https://autocard-backend.vercel.app/card',
+        {
+          id,  
+          question,
+          answer,
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json', // Specify the Content-Type header
+          },
+        }
+      );
       console.log('Post request successful', response.data);
       // setShowToast(true); // Show success toast
       // setTimeout(() => setShowToast(false), 3000); // Auto-hide after 3 seconds

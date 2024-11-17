@@ -29,7 +29,14 @@ const AllCards: React.FC = () => {
   const removeCard = async (id: string) => {
     try {
       console.log("Removing card with id:", id);
-      const response = await axios.delete(`https://autocard-backend.vercel.app/cards/${id}`);
+      const response = await axios.delete(
+        `https://autocard-backend.vercel.app/cards/${id}`,
+        {
+          headers: {
+            'Content-Type': 'application/json', // Add the Content-Type header
+          },
+        }
+      );
       if (response.status === 204) {
         console.log("Card deleted successfully");
         // Optionally, update the UI by removing the card from the state
@@ -43,7 +50,14 @@ const AllCards: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
         try {
-            const response = await axios.get<Card[]>('https://autocard-backend.vercel.app/cards');
+          const response = await axios.get<Card[]>(
+            'https://autocard-backend.vercel.app/cards',
+            {
+              headers: {
+                'Content-Type': 'application/json', // Add the Content-Type header
+              },
+            }
+          );
             setCards(response.data); // Update the state with the fetched cards
         } catch (error) {
             console.error('Error fetching cards:', error);

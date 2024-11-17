@@ -16,6 +16,11 @@ async function generateQuestions(text: string): Promise<QuestionAnswer[]> {
       {
         text: text,
         numQuestions: 5,
+      },
+      {
+        headers: {
+          'Content-Type': 'application/json', // Add the Content-Type header
+        },
       }
     );
     return response.data || [];
