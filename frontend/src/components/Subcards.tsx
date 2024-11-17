@@ -23,7 +23,7 @@ const SubCard: React.FC<SubCardProps> = ({ index, flipped, handleFlip, question,
   const handlePostRequest = async () => {
     try {
       const id = Date.now().toString();
-      const response = await axios.post('http://127.0.0.1:8000/card', {
+      const response = await axios.post('https://autocard-backend.vercel.app/card', {
         id,  
         question,
         answer,

@@ -31,7 +31,7 @@ app.add_middleware(
 )
 
 openai.api_key = os.getenv("OPENAI_API_KEY")
-MONGO_URL = os.getenv("MONGO_URL")
+MONGO_URL = os.getenv("MONGODB_URI")
 
 client = AsyncIOMotorClient(MONGO_URL)
 database = client["cards_db"]

@@ -12,7 +12,7 @@ interface QuestionAnswer {
 async function generateQuestions(text: string): Promise<QuestionAnswer[]> {
   try {
     const response = await axios.post<{ question: string; answer: string }[]>(
-      'http://127.0.0.1:8000/generate-questions',
+      'https://autocard-backend.vercel.app/generate-questions',
       {
         text: text,
         numQuestions: 5,
