@@ -3,7 +3,7 @@
     margin-top: -50px;
     width: 60vw; /* Set the width to 95% of the viewport width */
   height: 60vh; /* Set the height to 95% of the viewport height */
-  font-size: 60px;
+  font-size: 30px;
   border: 1px solid rgba(0, 0, 0, 0.1); /* Soft, light border */
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
   background-color: #ffffff; /* Background color for the card */
