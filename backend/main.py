@@ -105,7 +105,7 @@ async def create_card(card: Card):
 # Read all cards
 @app.get("/cards", response_model=List[Card])
 async def get_cards():
-    cards = await cards_collection.find().to_list(100)
+    cards = await cards_collection.find().limit(50).to_list(50)
     return [{**card, "id": str(card["id"])} for card in cards]
 
 # Read a single card
