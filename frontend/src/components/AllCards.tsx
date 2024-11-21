@@ -47,6 +47,33 @@ const AllCards: React.FC = () => {
     }
   };
 
+  const editCard = async (id: string, updatedData: { question: string; answer: string }) => {
+    try {
+      console.log("Editing card with id:", id);
+      const response = await axios.put(
+        `http://127.0.0.1:8000/cards/${id}`,
+        updatedData,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+      if (response.status === 200) {
+        console.log("Card updated successfully:", response.data);
+        // Optionally, update the UI by modifying the card in the state
+        setCards((prevCards) =>
+          prevCards.map((card) =>
+            card.id === id ? { ...card, ...response.data } : card
+          )
+        );
+      }
+    } catch (error) {
+      console.error("Failed to update card:", error);
+    }
+  };
+  
+
   useEffect(() => {
     const fetchData = async () => {
         try {
@@ -87,7 +114,7 @@ const AllCards: React.FC = () => {
               className="flex-shrink-0 w-full flex items-center justify-center"
               style={{ minWidth: '100vw' }} // Ensure each card takes full width
             >
-              <Card question={item.question} answer={item.answer} id={item.id} removeCard={removeCard}/>
+              <Card question={item.question} answer={item.answer} id={item.id} removeCard={removeCard} editCard={editCard}/>
             </div>
           ))}
         </div>

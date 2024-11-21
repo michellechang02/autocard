@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import './Card.css';
 import { Button } from '@nextui-org/react'
-import { Trash } from 'react-feather'
+import { Trash, Edit } from 'react-feather'
+import EditButton from './EditButton';
 
 
 interface CardProps {
@@ -9,9 +10,10 @@ interface CardProps {
   answer: string;
   id: string;
   removeCard: (id: string) => void;
+  editCard: (id: string, updatedData: { question: string; answer: string }) => void;
 }
 
-const Card: React.FC<CardProps> = ({ question, answer, id, removeCard }) => {
+const Card: React.FC<CardProps> = ({ question, answer, id, removeCard, editCard }) => {
   const [flipped, setFlipped] = useState(false);
 
   
@@ -23,23 +25,26 @@ const Card: React.FC<CardProps> = ({ question, answer, id, removeCard }) => {
   onClick={() => setFlipped(!flipped)}
   key={id}
 >
-  <Button
-    variant="flat"
-    color="danger"
-    isIconOnly
-    style={{
-      position: 'absolute',
-      top: '1rem',
-      right: '1rem',
-      zIndex: 1,
-    }}
-    onClick={(e) => {
-      e.stopPropagation(); // Prevents flipping the card when clicking the remove button
-      removeCard(id); // Call the function to remove the card
-    }}
+  <div
+    className="absolute top-1 right-1 flex gap-2 z-10"
+    style={{ position: 'absolute', zIndex: 1 }}
   >
-    <Trash />
-  </Button>
+    {/* New Button (e.g., Edit Button) */}
+    <EditButton id={id} editCard={editCard} currentQuestion={question} currentAnswer={answer} />
+
+    {/* Trash Button */}
+    <Button
+      variant="flat"
+      color="danger"
+      isIconOnly
+      onClick={(e) => {
+        e.stopPropagation(); // Prevents flipping the card
+        removeCard(id); // Call the function to remove the card
+      }}
+    >
+      <Trash />
+    </Button>
+  </div>
 
   <div
     className={`flip-card-inner w-full h-full transition-transform duration-700 ${
@@ -54,6 +59,7 @@ const Card: React.FC<CardProps> = ({ question, answer, id, removeCard }) => {
     </div>
   </div>
 </div>
+
 
   );
 };
