@@ -21,25 +21,25 @@ app = FastAPI()
 # Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", 
-                   "http://localhost:4173",
-                   "https://michellechang02.github.io",
-                   "https://autocard-frontend.vercel.app"],
+    allow_origins=[
+        "http://localhost:5173", 
+        "http://localhost:4173",
+        "https://michellechang02.github.io",
+        "https://autocard-frontend.vercel.app",
+    ],
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],  # Explicitly list allowed methods
+    allow_headers=["Content-Type", "Authorization", "X-Requested-With"],  # Restrict to specific headers
 )
 
 # Load environment variables
-openai_api_key = os.getenv("OPENAI_API_KEY")
+openai.api_key = os.getenv("OPENAI_API_KEY")
 mongo_url = os.getenv("MONGODB_URI")
 data_api_url = os.getenv("DATA_API_URL")
 data_api_key = os.getenv("DATA_API_KEY")
 
 
 # Check if environment variables are set
-if not openai_api_key:
-    logging.warning("OPENAI_API_KEY is not set. Ensure it is configured in the environment.")
 if not mongo_url:
     logging.warning("MONGODB_URI is not set. Ensure it is configured in the environment.")
 if not data_api_url or not data_api_key:

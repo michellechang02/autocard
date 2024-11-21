@@ -38,6 +38,7 @@ const Reading: React.FC = () => {
   const [generatedQuestions, setGeneratedQuestions] = useState<QuestionAnswer[]>([]);
   const displayTextRef = useRef<HTMLDivElement | null>(null);
   const inputTextRef = useRef<HTMLTextAreaElement | null>(null);
+  const [highlightedText, setHighlightedText] = useState('');
 
 
   useEffect(() => {
@@ -70,6 +71,8 @@ const Reading: React.FC = () => {
     setLoadingText("Capturing...");
     let visible_text = captureVisibleText();
     const questions_answers = await generateQuestions(visible_text);
+    console.log(visible_text);
+    setHighlightedText(visible_text);
     console.log(questions_answers);
     setGeneratedQuestions(questions_answers);
     
@@ -90,6 +93,51 @@ const Reading: React.FC = () => {
     setIsSubmitted(false);
     setGeneratedQuestions([]);
   };
+
+
+  function highlightText(text: string, highlightedText: string): JSX.Element[] {
+    if (!highlightedText || !text.includes(highlightedText)) {
+      // If no highlightedText or it doesn't exist in text, return the entire text as-is
+      return [<span key="full-text">{text}</span>];
+    }
+  
+    const segments: JSX.Element[] = [];
+    let currentIndex = 0;
+  
+    // Find all occurrences of highlightedText and create segments
+    while (currentIndex < text.length) {
+      const startIndex = text.indexOf(highlightedText, currentIndex);
+  
+      if (startIndex === -1) {
+        // No more occurrences, push the remaining text
+        segments.push(<span key={`text-${currentIndex}`}>{text.slice(currentIndex)}</span>);
+        break;
+      }
+  
+      // Push text before the highlighted text
+      if (startIndex > currentIndex) {
+        segments.push(
+          <span key={`text-${currentIndex}`}>{text.slice(currentIndex, startIndex)}</span>
+        );
+      }
+  
+      // Push the highlighted text
+      segments.push(
+        <span
+          key={`highlight-${startIndex}`}
+          style={{ backgroundColor: "#FDEDD3" }}
+        >
+          {text.slice(startIndex, startIndex + highlightedText.length)}
+        </span>
+      );
+  
+      // Update currentIndex to continue searching after the highlighted text
+      currentIndex = startIndex + highlightedText.length;
+    }
+  
+    return segments;
+  }
+  
 
 
   return (
@@ -128,7 +176,7 @@ const Reading: React.FC = () => {
           className="h-full w-full overflow-y-auto"
           style={{ whiteSpace: 'pre-wrap', wordWrap: 'break-word' }}
         >
-          {text}
+          {highlightText(text, highlightedText)}
         </div>
       ) : (
         <textarea

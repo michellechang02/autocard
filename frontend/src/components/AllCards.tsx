@@ -30,7 +30,7 @@ const AllCards: React.FC = () => {
     try {
       console.log("Removing card with id:", id);
       const response = await axios.delete(
-        `https://autocard-backend.vercel.app/cards/${id}`,
+        `http://127.0.0.1:8000/cards/${id}`,
         {
           headers: {
             'Content-Type': 'application/json', // Add the Content-Type header
@@ -51,7 +51,7 @@ const AllCards: React.FC = () => {
     const fetchData = async () => {
         try {
           const response = await axios.get<Card[]>(
-            'https://autocard-backend.vercel.app/cards',
+            'http://127.0.0.1:8000/cards',
             {
               headers: {
                 'Content-Type': 'application/json', // Add the Content-Type header
