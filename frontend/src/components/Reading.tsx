@@ -36,7 +36,7 @@ const Reading: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [loadingText, setLoadingText] = useState("Capturing...");
   const [loadingHighlight, setLoadingHighlight] = useState(false);
-  const [loadingHighlightedText, setLoadingHighlightedText] = useState("Making Flashcards for Highlight...");
+  const [loadingHighlightedText, setLoadingHighlightedText] = useState("Flashcarding...");
   const [generatedQuestions, setGeneratedQuestions] = useState<QuestionAnswer[]>([]);
   const displayTextRef = useRef<HTMLDivElement | null>(null);
   const inputTextRef = useRef<HTMLTextAreaElement | null>(null);
@@ -46,7 +46,7 @@ const Reading: React.FC = () => {
   useEffect(() => {
     if (loading) {
       const timer = setTimeout(() => {
-        setLoadingText("Creating Flashcards ...");
+        setLoadingText("Flashcarding...");
       }, 2000);
 
       // Clear timeout if loading state changes
@@ -57,7 +57,7 @@ const Reading: React.FC = () => {
   useEffect(() => {
     if (loadingHighlight) {
       const timer = setTimeout(() => {
-        setLoadingText("Creating Flashcards ...");
+        setLoadingText("Flashcarding...");
       }, 2000);
 
       // Clear timeout if loading state changes
@@ -155,7 +155,7 @@ const Reading: React.FC = () => {
     const selection = window.getSelection();
   
     if (!selection || selection.toString().trim() === "") {
-      console.log("No text is highlighted by the user.");
+      alert("No text is highlighted by the user.");
       return null;
     }
   
@@ -165,7 +165,7 @@ const Reading: React.FC = () => {
 
   const handleUserHighlightedText = async (): Promise<void> => {
     setLoadingHighlight(true);
-    setLoadingHighlightedText("Making Flashcards for Highlight...");
+    setLoadingHighlightedText("Flashcarding...");
     let user_highlighted_text = captureUserHighlightedText();
     if (!user_highlighted_text) {
       setLoadingHighlightedText("No text is highlighted by the user.");
@@ -187,7 +187,8 @@ const Reading: React.FC = () => {
     <div className="flex gap-4 p-4 min-h-screen h-screen">
       {/* Left Card for Large Text */}
       <Card className="flex-1 p-6 h-full flex flex-col overflow-hidden" radius="none">
-      <div className="flex flex-col gap-4 mb-6">
+      
+      <div className={`flex ${!isSubmitted ? "flex-col" : "flex-row"} gap-4 mb-6`}>
   {!isSubmitted ? (
     <Button
       color="warning"
@@ -204,7 +205,7 @@ const Reading: React.FC = () => {
         color="warning"
         variant="flat"
         onClick={deleteText}
-        className="w-full flex items-center justify-center px-2 py-1 text-sm font-medium rounded-md shadow-sm hover:bg-red-500 hover:text-white transition"
+        className="flex-grow flex items-center justify-center px-2 py-1 text-sm font-medium rounded-md shadow-sm hover:bg-red-500 hover:text-white transition"
       >
         <Trash className="mr-1 text-lg" />
         Delete
@@ -214,7 +215,7 @@ const Reading: React.FC = () => {
         variant="flat"
         onClick={handleGenerateQuestions}
         disabled={loading}
-        className={`w-full flex items-center justify-center px-2 py-1 text-sm font-medium rounded-md shadow-sm ${
+        className={`flex-grow flex items-center justify-center px-2 py-1 text-sm font-medium rounded-md shadow-sm ${
           loading
             ? "bg-gray-300 text-gray-600 cursor-not-allowed"
             : "hover:bg-green-500 hover:text-white transition"
@@ -228,7 +229,7 @@ const Reading: React.FC = () => {
         ) : (
           <>
             <Crop className="mr-1 text-lg" />
-            Capture Screen & Flashcard
+            Capture Screen
           </>
         )}
       </Button>
@@ -237,7 +238,7 @@ const Reading: React.FC = () => {
         variant="flat"
         onClick={handleUserHighlightedText}
         disabled={loadingHighlight}
-        className={`w-full flex items-center justify-center px-2 py-1 text-sm font-medium rounded-md shadow-sm ${
+        className={`flex-grow flex items-center justify-center px-2 py-1 text-sm font-medium rounded-md shadow-sm ${
           loadingHighlight
             ? "bg-gray-300 text-gray-600 cursor-not-allowed"
             : "hover:bg-blue-500 hover:text-white transition"
@@ -251,7 +252,7 @@ const Reading: React.FC = () => {
         ) : (
           <>
             <PenTool className="mr-1 text-lg" />
-            Highlight Text & Flashcard
+            Highlight Text
           </>
         )}
       </Button>
