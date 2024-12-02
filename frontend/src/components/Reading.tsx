@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { Card, CardBody, Button } from '@nextui-org/react';
-import { Trash, Send, PlusCircle } from 'react-feather';
+import { Trash, Send, PenTool, Crop } from 'react-feather';
 import Subcards from './Subcards.tsx';
 import axios from 'axios';
 
@@ -35,6 +35,8 @@ const Reading: React.FC = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [loadingText, setLoadingText] = useState("Capturing...");
+  const [loadingHighlight, setLoadingHighlight] = useState(false);
+  const [loadingHighlightedText, setLoadingHighlightedText] = useState("Flashcarding...");
   const [generatedQuestions, setGeneratedQuestions] = useState<QuestionAnswer[]>([]);
   const displayTextRef = useRef<HTMLDivElement | null>(null);
   const inputTextRef = useRef<HTMLTextAreaElement | null>(null);
@@ -44,13 +46,24 @@ const Reading: React.FC = () => {
   useEffect(() => {
     if (loading) {
       const timer = setTimeout(() => {
-        setLoadingText("Creating Flashcards ...");
+        setLoadingText("Flashcarding...");
       }, 2000);
 
       // Clear timeout if loading state changes
       return () => clearTimeout(timer);
     }
   }, [loading]);
+
+  useEffect(() => {
+    if (loadingHighlight) {
+      const timer = setTimeout(() => {
+        setLoadingText("Flashcarding...");
+      }, 2000);
+
+      // Clear timeout if loading state changes
+      return () => clearTimeout(timer);
+    }
+  }, [loadingHighlight]);
 
   const captureVisibleText = () => {
     if (displayTextRef.current) {
@@ -71,9 +84,7 @@ const Reading: React.FC = () => {
     setLoadingText("Capturing...");
     let visible_text = captureVisibleText();
     const questions_answers = await generateQuestions(visible_text);
-    console.log(visible_text);
     setHighlightedText(visible_text);
-    console.log(questions_answers);
     setGeneratedQuestions(questions_answers);
     
     // reset the loading text & loading status
@@ -137,6 +148,38 @@ const Reading: React.FC = () => {
   
     return segments;
   }
+
+
+  const captureUserHighlightedText = (): string | null => {
+    // Get the current selection
+    const selection = window.getSelection();
+  
+    if (!selection || selection.toString().trim() === "") {
+      alert("No text is highlighted by the user.");
+      return null;
+    }
+  
+    // Return the highlighted text
+    return selection.toString().trim();
+  };
+
+  const handleUserHighlightedText = async (): Promise<void> => {
+    setLoadingHighlight(true);
+    setLoadingHighlightedText("Flashcarding...");
+    let user_highlighted_text = captureUserHighlightedText();
+    if (!user_highlighted_text) {
+      setLoadingHighlightedText("No text is highlighted by the user.");
+      setLoadingHighlight(false);
+      return;
+    }
+    const questions_answers = await generateQuestions(user_highlighted_text);
+    setHighlightedText(user_highlighted_text);
+    setGeneratedQuestions(questions_answers);
+      
+    // reset the loading text & loading status
+    setLoadingHighlightedText("Capturing...");
+    setLoadingHighlight(false);
+  };
   
 
 
@@ -144,31 +187,80 @@ const Reading: React.FC = () => {
     <div className="flex gap-4 p-4 min-h-screen h-screen">
       {/* Left Card for Large Text */}
       <Card className="flex-1 p-6 h-full flex flex-col overflow-hidden" radius="none">
-        <div className="flex flex-col gap-2 mb-4">
-          {!isSubmitted ? (
-            <Button color="warning" variant="flat" onClick={handleSubmit} fullWidth>
-              <Send className="mr-2" /> Submit
-            </Button>
-          ) : (
-            <>
-              <Button color="warning" variant="flat" onClick={deleteText} fullWidth>
-                <Trash className="mr-2" /> Delete
-              </Button>
-              <Button color="success" variant="flat" onClick={handleGenerateQuestions} fullWidth disabled={loading}>
-                {loading ? (
-                  <div className="flex items-center justify-center">
-                    <div className="w-4 h-4 border-2 border-t-2 border-t-transparent border-current animate-spin rounded-full"></div>
-                    <span className="ml-2">{loadingText}</span>
-                  </div>
-                ) : (
-                  <>
-                    <PlusCircle className="mr-2" /> Capture & Flashcard Text
-                  </>
-                )}
-              </Button>
-            </>
-          )}
-        </div>
+      
+      <div className={`flex ${!isSubmitted ? "flex-col" : "flex-row"} gap-4 mb-6`}>
+  {!isSubmitted ? (
+    <Button
+      color="warning"
+      variant="flat"
+      onClick={handleSubmit}
+      className="w-full flex items-center justify-center px-2 py-1 text-sm font-medium rounded-md shadow-sm hover:bg-orange-400 hover:text-white transition"
+    >
+      <Send className="mr-1 text-lg" />
+      Submit
+    </Button>
+  ) : (
+    <>
+      <Button
+        color="warning"
+        variant="flat"
+        onClick={deleteText}
+        className="flex-grow flex items-center justify-center px-2 py-1 text-sm font-medium rounded-md shadow-sm hover:bg-red-500 hover:text-white transition"
+      >
+        <Trash className="mr-1 text-lg" />
+        Delete
+      </Button>
+      <Button
+        color="warning"
+        variant="flat"
+        onClick={handleGenerateQuestions}
+        disabled={loading}
+        className={`flex-grow flex items-center justify-center px-2 py-1 text-sm font-medium rounded-md shadow-sm ${
+          loading
+            ? "bg-gray-300 text-gray-600 cursor-not-allowed"
+            : "hover:bg-green-500 hover:text-white transition"
+        }`}
+      >
+        {loading ? (
+          <div className="flex items-center justify-center">
+            <div className="w-4 h-4 border-2 border-t-2 border-t-transparent border-current animate-spin rounded-full"></div>
+            <span className="ml-1 text-xs">{loadingText}</span>
+          </div>
+        ) : (
+          <>
+            <Crop className="mr-1 text-lg" />
+            Capture Screen
+          </>
+        )}
+      </Button>
+      <Button
+        color="warning"
+        variant="flat"
+        onClick={handleUserHighlightedText}
+        disabled={loadingHighlight}
+        className={`flex-grow flex items-center justify-center px-2 py-1 text-sm font-medium rounded-md shadow-sm ${
+          loadingHighlight
+            ? "bg-gray-300 text-gray-600 cursor-not-allowed"
+            : "hover:bg-blue-500 hover:text-white transition"
+        }`}
+      >
+        {loadingHighlight ? (
+          <div className="flex items-center justify-center">
+            <div className="w-4 h-4 border-2 border-t-2 border-t-transparent border-current animate-spin rounded-full"></div>
+            <span className="ml-1 text-xs">{loadingHighlightedText}</span>
+          </div>
+        ) : (
+          <>
+            <PenTool className="mr-1 text-lg" />
+            Highlight Text
+          </>
+        )}
+      </Button>
+    </>
+  )}
+</div>
+
+
         <CardBody className="flex-1 overflow-auto border border-gray-300 rounded-lg p-4">
         {isSubmitted ? (
         <div

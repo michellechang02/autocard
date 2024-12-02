@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './Card.css';
 import { Button } from '@nextui-org/react'
-import { Trash, Edit } from 'react-feather'
+import { Trash } from 'react-feather'
 import EditButton from './EditButton';
 
 
