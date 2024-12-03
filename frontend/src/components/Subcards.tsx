@@ -33,6 +33,8 @@ const SubCard: React.FC<SubCardProps> = ({ index, flipped, handleFlip, question,
       });
       console.log('Post request successful', response.data);
 
+      alert('Flashcard saved: ' + question);
+
       // Show success toast
       setToastMessage('Post request successful!');
       setToastType('success');
