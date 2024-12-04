@@ -32,18 +32,10 @@ const SubCard: React.FC<SubCardProps> = ({ index, flipped, handleFlip, question,
         answer,
       });
       console.log('Post request successful', response.data);
-
-      // Show success toast
-      setToastMessage('Post request successful!');
-      setToastType('success');
-      setShowToast(true);
+      alert("Flashcard saved: " + question);
     } catch (error) {
       console.error('Error in post request:', error);
-
-      // Show error toast
-      setToastMessage('Failed to make post request.');
-      setToastType('error');
-      setShowToast(true);
+      alert('Error in saving Flashcard. Please try again!');
     }
   };
 

@@ -31,16 +31,21 @@ async function generateQuestions(text: string): Promise<QuestionAnswer[]> {
 }
 
 const Reading: React.FC = () => {
-  const [text, setText] = useState('');
-  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [text, setText] = useState(() => sessionStorage.getItem('inputText') || ''); // Initialize from sessionStorage
+  const [isSubmitted, setIsSubmitted] = useState(() => Boolean(sessionStorage.getItem('inputText')));
   const [loading, setLoading] = useState(false);
   const [loadingText, setLoadingText] = useState("Capturing...");
   const [loadingHighlight, setLoadingHighlight] = useState(false);
   const [loadingHighlightedText, setLoadingHighlightedText] = useState("Flashcarding...");
-  const [generatedQuestions, setGeneratedQuestions] = useState<QuestionAnswer[]>([]);
+  const [generatedQuestions, setGeneratedQuestions] = useState<QuestionAnswer[]>(() => {
+    const storedQuestions = sessionStorage.getItem("generatedQuestions");
+    return storedQuestions ? JSON.parse(storedQuestions) : [];
+  });
   const displayTextRef = useRef<HTMLDivElement | null>(null);
   const inputTextRef = useRef<HTMLTextAreaElement | null>(null);
-  const [highlightedText, setHighlightedText] = useState('');
+  const [highlightedText, setHighlightedText] = useState<string>(() => {
+    return sessionStorage.getItem("highlightedText") || "";
+  });
 
 
   useEffect(() => {
@@ -85,7 +90,9 @@ const Reading: React.FC = () => {
     let visible_text = captureVisibleText();
     const questions_answers = await generateQuestions(visible_text);
     setHighlightedText(visible_text);
+    sessionStorage.setItem("highlightedText", visible_text);
     setGeneratedQuestions(questions_answers);
+    sessionStorage.setItem("generatedQuestions", JSON.stringify(questions_answers));
     
     // reset the loading text & loading status
     setLoadingText("Capturing...");
@@ -96,6 +103,7 @@ const Reading: React.FC = () => {
     if (inputTextRef.current) {
       setIsSubmitted(true);
       setText(inputTextRef.current.value);
+      sessionStorage.setItem('inputText', inputTextRef.current.value);
     }
   };
 
@@ -103,6 +111,9 @@ const Reading: React.FC = () => {
     setText('');
     setIsSubmitted(false);
     setGeneratedQuestions([]);
+    sessionStorage.removeItem('generatedQuestions');
+    sessionStorage.removeItem('inputText');
+    sessionStorage.removeItem('highlightedText');
   };
 
 
@@ -174,7 +185,9 @@ const Reading: React.FC = () => {
     }
     const questions_answers = await generateQuestions(user_highlighted_text);
     setHighlightedText(user_highlighted_text);
+    sessionStorage.setItem('highlightedText', user_highlighted_text);
     setGeneratedQuestions(questions_answers);
+    sessionStorage.setItem('generatedQuestions', JSON.stringify(questions_answers));
       
     // reset the loading text & loading status
     setLoadingHighlightedText("Capturing...");
