@@ -13,8 +13,8 @@ interface Card {
 }
 
 const AllCards: React.FC = () => {
-  const [currentIndex, setCurrentIndex] = useState(0);
   const [cards, setCards] = useState<Card[]>([]);
+  const [currentIndex, setCurrentIndex] = useState(0);
 
   const handleNext = () => {
     setCurrentIndex((prevIndex) => (prevIndex + 1) % cards.length);
@@ -93,6 +93,14 @@ const AllCards: React.FC = () => {
     console.log(cards)
     fetchData();
 }, []); // Empty dependency array to run once on mount
+
+  useEffect(() => {
+    if (cards.length > 0) {
+      setCurrentIndex(cards.length - 1);
+    } else {
+      setCurrentIndex(0);
+    }
+  }, [cards]);
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">

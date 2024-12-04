@@ -46,6 +46,15 @@ const Reading: React.FC = () => {
   const [highlightedText, setHighlightedText] = useState<string>(() => {
     return sessionStorage.getItem("highlightedText") || "";
   });
+  const [flipped, setFlipped] = useState<boolean[]>(() => {
+    const storedFlipped = sessionStorage.getItem("flipped");
+    return storedFlipped ? JSON.parse(storedFlipped) : [];
+  });
+
+  const [saved, setSaved] = useState<boolean[]>(() => {
+    const storedSaved = sessionStorage.getItem("saved");
+    return storedSaved ? JSON.parse(storedSaved) : [];
+  });
 
 
   useEffect(() => {
@@ -85,6 +94,13 @@ const Reading: React.FC = () => {
   };
 
   const handleGenerateQuestions = async () => {
+    //clear 
+    sessionStorage.removeItem("saved");
+    sessionStorage.removeItem("flipped");
+    setSaved(Array(generatedQuestions.length).fill(false));
+    setFlipped(Array(generatedQuestions.length).fill(false));
+
+    // loading
     setLoading(true);
     setLoadingText("Capturing...");
     let visible_text = captureVisibleText();
@@ -174,6 +190,14 @@ const Reading: React.FC = () => {
   };
 
   const handleUserHighlightedText = async (): Promise<void> => {
+
+    // clear
+    sessionStorage.removeItem("saved");
+    sessionStorage.removeItem("flipped");
+    setSaved(Array(generatedQuestions.length).fill(false));
+    setFlipped(Array(generatedQuestions.length).fill(false));
+
+    // loading
     setLoadingHighlight(true);
     setLoadingHighlightedText("Flashcarding...");
     let user_highlighted_text = captureUserHighlightedText();
@@ -296,7 +320,12 @@ const Reading: React.FC = () => {
         </CardBody>
       </Card>
 
-      <Subcards generatedQuestions={generatedQuestions} />
+      <Subcards
+        generatedQuestions={generatedQuestions}
+        flipped={flipped}
+        saved={saved}
+        setFlipped={setFlipped}
+        setSaved={setSaved}/>
     </div>
   );
 };
