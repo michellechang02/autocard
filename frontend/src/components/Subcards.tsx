@@ -3,7 +3,6 @@ import { Button } from '@nextui-org/react';
 import './Subcards.css'; // Import the CSS file
 import axios from 'axios';
 import { Plus } from 'react-feather';
-import Toast from './Toast';
 
 interface QuestionAnswer {
   question: string;
@@ -19,9 +18,6 @@ interface SubCardProps {
 }
 
 const SubCard: React.FC<SubCardProps> = ({ index, flipped, handleFlip, question, answer }) => {
-  const [showToast, setShowToast] = useState(false);
-  const [toastMessage, setToastMessage] = useState('');
-  const [toastType, setToastType] = useState<'success' | 'error'>('success');
 
   const handlePostRequest = async () => {
     try {
@@ -71,13 +67,6 @@ const SubCard: React.FC<SubCardProps> = ({ index, flipped, handleFlip, question,
         </div>
       </div>
 
-      {showToast && (
-        <Toast
-          message={toastMessage}
-          type={toastType}
-          onClose={() => setShowToast(false)}
-        />
-      )}
     </div>
   );
 };

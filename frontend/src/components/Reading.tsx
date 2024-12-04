@@ -110,10 +110,9 @@ const Reading: React.FC = () => {
   const deleteText = () => {
     setText('');
     setIsSubmitted(false);
+    setHighlightedText("");
     setGeneratedQuestions([]);
-    sessionStorage.removeItem('generatedQuestions');
-    sessionStorage.removeItem('inputText');
-    sessionStorage.removeItem('highlightedText');
+    sessionStorage.clear();
   };
 
 
