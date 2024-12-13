@@ -1,7 +1,7 @@
 # AutoCard: An Augmented Reading Interface for Generating Flashcards from Contextual Highlights and Visible Text
 
-## Novel Aspects of Design
-Unlike existing methods, AutoCard addresses the gap in dynamic and intuitive flashcard creation, offering a transformative approach to digital learning tools.
+## Research Paper
+- [Research Paper](https://drive.google.com/file/d/1lj4bthyQ_an9UxPPpE9ijVm1XpXdejSf/view?usp=sharing)
 
 ## Running the Frontend locally
 ```bash
