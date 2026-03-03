@@ -16,6 +16,6 @@ cd backend && uvicorn main:app --reload
 
 ## Running Backend Tests
 ```bash
-cd backend && pip install -r requirements.txt && pytest test_main.py -v
+cd backend && pip install -r requirements.txt && pytest tests/ -v
 ```
 
