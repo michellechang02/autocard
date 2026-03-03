@@ -14,3 +14,8 @@ Open a browser (preferably Google Chrome) and go to http://localhost:5173/
 cd backend && uvicorn main:app --reload
 ```
 
+## Running Backend Tests
+```bash
+cd backend && pip install -r requirements.txt && pytest test_main.py -v
+```
+
